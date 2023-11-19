@@ -1,0 +1,18 @@
+services:
+  - docker
+
+script:
+  ## Build
+  - docker-compose -f docker-compose-build.yaml build --parallel
+  ## Tag
+  - docker tag udagram-api-feed:v1 miatran1109/udagram-api-feed:v1
+  - docker tag udagram-api-user:v1 miatran1109/udagram-api-user:v1
+  - docker tag udagram-frontend:v1 miatran1109/udagram-frontend:v1
+  - docker tag reverseproxy:v1 miatran1109/reverseproxy:v1
+
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push miatran1109/udagram-api-feed:v1
+  - docker push miatran1109/udagram-api-user:v1
+  - docker push miatran1109/udagram-frontend:v1
+  - docker push miatran1109/reverseproxy:v1
